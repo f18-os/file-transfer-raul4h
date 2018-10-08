@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # Echo client program
-import socket, sys, re
+import socket, sys, re,os
 
 sys.path.append("../lib")       # for params
 import params
@@ -11,12 +11,15 @@ from framedSock import framedSend, framedReceive
 
 inputFile = input("Please enter file name: ")
 
+if(not os.path.isfile(inputFile)):
+    print("No such file exist")
+    exit()
+
 switchesVarDefaults = (
     (('-s', '--server'), 'server', "127.0.0.1:50001"),
     (('-d', '--debug'), "debug", False), # boolean (set if present)
     (('-?', '--usage'), "usage", False), # boolean (set if present)
     )
-
 
 progname = "framedClient"
 paramMap = params.parseParams(switchesVarDefaults)
@@ -69,6 +72,9 @@ if(framedReceive(s,debug).decode() == "Ready"):
         framedSend(s,data.encode(),debug)
         data = sentFile.read(100)
     framedSend(s,b"exit",debug)
+else:
+    print("File already exist in server")
+    exit()
     
 
 print("received:", framedReceive(s, debug))

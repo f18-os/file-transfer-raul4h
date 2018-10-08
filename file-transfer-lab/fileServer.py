@@ -41,7 +41,10 @@ while True:
                 if debug: print("child exiting")
                 sys.exit(0)
             inputFile = payload.decode()
-            fileExist = os.path.exists("uploadServer/" + inputFile)
+            fileExist = os.path.isfile("uploadServer/" + inputFile)
+            if(fileExist):
+                framedSend(sock,b"Error",debug)
+                sys.exit()
             framedSend(sock,b"Ready",debug)
             openedFile = open('uploadServer/' + inputFile, "w")
             data = framedReceive(sock,debug)
